@@ -33,9 +33,10 @@ impl SparseOneNnd {
         let mut next_small_i = 0;
         for (rank, one_index) in iter.enumerate() {
             let one_index = one_index as usize;
-            let small_base = smalles.len();
+            //let small_base = smalles.len();
             while next_small_i <= one_index {
-                small_count_index = smalles.len();
+                let small_base = smalles.len();
+                small_count_index = small_base;
                 smalles.push(0);
                 prev_index = next_small_i;
 
@@ -139,7 +140,7 @@ impl SelectOne for SparseOneNnd {
         {
             let i = middles
                 .binary_search_by_key(&middle_rank, |e| e.rank as Rank)
-                .unwrap_or_else(|i| i - 1);
+                .unwrap_or_else(|i| i.saturating_sub(1));
             let middle_base = &middles[i];
             let middle_index = i as Index * MIDDLE_SIZE as Index;
 
