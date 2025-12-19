@@ -224,4 +224,24 @@ mod test {
             assert_eq!(nnd.succ_one(i as Index), expected.succ_one(i as Index));
         }
     }
+    #[test]
+    fn sparse_one_nnd_large_gaps_select_rank() {
+        let mut bits = vec![Bit::from(false); 200_000];
+        // ones near boundaries
+        bits[0] = Bit::from(true);
+        bits[65_536] = Bit::from(true);
+        bits[131_072] = Bit::from(true);
+        bits[199_999] = Bit::from(true);
+
+        let nnd = bits.iter().cloned().collect::<SparseOneNnd>();
+
+        // rank at end should be 4
+        assert_eq!(nnd.rank_one(200_000 as Index - 1), 4 as Rank);
+
+        // select should find each one
+        assert_eq!(nnd.select_one(1).unwrap(), 0);
+        assert_eq!(nnd.select_one(2).unwrap(), 65_536);
+        assert_eq!(nnd.select_one(3).unwrap(), 131_072);
+        assert_eq!(nnd.select_one(4).unwrap(), 199_999);
+    }
 }
